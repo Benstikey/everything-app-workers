@@ -171,10 +171,10 @@ export default function CalendarMain() {
   }, [dayModal]);
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <Card className="mb-6 rounded-2xl border bg-card/60 backdrop-blur">
-        <CardContent className="flex flex-wrap items-center justify-between gap-4 p-4">
-          <div className="flex flex-wrap items-center gap-2">
+    <div className="mx-auto flex min-h-screen max-w-6xl flex-col">
+      <div className="mb-6 grid gap-3 md:grid-cols-[1fr_auto]">
+        <Card className="rounded-2xl border bg-card/60 backdrop-blur">
+          <CardContent className="flex flex-wrap items-center gap-2 p-3">
             <Button variant="secondary" className="rounded-full px-4">
               Dashboard
             </Button>
@@ -190,44 +190,52 @@ export default function CalendarMain() {
             >
               Calendar
             </Button>
-          </div>
+          </CardContent>
+        </Card>
 
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                className="flex items-center gap-3 rounded-full border bg-muted/40 px-3 py-1.5 transition hover:bg-muted/60"
-                type="button"
+        <Card className="rounded-2xl border bg-card/60 backdrop-blur">
+          <CardContent className="p-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  className="flex items-center gap-3 rounded-full border bg-muted/40 px-3 py-1.5 transition hover:bg-muted/60"
+                  type="button"
+                >
+                  <Avatar className="h-9 w-9 border">
+                    <AvatarImage src={profileImage} alt={profileName} />
+                    <AvatarFallback>
+                      {profileName.slice(0, 1).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="text-left leading-tight">
+                    <div className="text-sm font-medium">{profileName}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {profileEmail}
+                    </div>
+                  </div>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent
+                side="bottom"
+                align="end"
+                className="w-56 rounded-xl"
               >
-                <Avatar className="h-9 w-9 border">
-                  <AvatarImage src={profileImage} alt={profileName} />
-                  <AvatarFallback>
-                    {profileName.slice(0, 1).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="text-left leading-tight">
-                  <div className="text-sm font-medium">{profileName}</div>
-                  <div className="text-xs text-muted-foreground">{profileEmail}</div>
+                <div className="space-y-1 text-xs">
+                  <div className="text-sm font-semibold text-foreground">
+                    {profileName}
+                  </div>
+                  <div className="text-muted-foreground">{profileEmail}</div>
+                  <div className="text-muted-foreground">
+                    Active plan: Personal
+                  </div>
                 </div>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent
-              side="bottom"
-              align="end"
-              className="w-56 rounded-xl"
-            >
-              <div className="space-y-1 text-xs">
-                <div className="text-sm font-semibold text-foreground">
-                  {profileName}
-                </div>
-                <div className="text-muted-foreground">{profileEmail}</div>
-                <div className="text-muted-foreground">Active plan: Personal</div>
-              </div>
-            </TooltipContent>
-          </Tooltip>
-        </CardContent>
-      </Card>
+              </TooltipContent>
+            </Tooltip>
+          </CardContent>
+        </Card>
+      </div>
 
-      <div className="grid gap-6 lg:grid-cols-[340px_1fr] items-stretch">
+      <div className="grid flex-1 gap-6 lg:grid-cols-[340px_1fr] items-stretch">
         {/* LEFT SIDEBAR */}
         <Card className="rounded-2xl border bg-card/60 backdrop-blur h-full flex flex-col">
           <CardHeader className="space-y-2">
@@ -410,7 +418,7 @@ export default function CalendarMain() {
                     key={day.toISOString()}
                     variant="secondary"
                     className={cn(
-                      "relative h-32 w-full rounded-2xl p-3",
+                      "relative aspect-square w-full rounded-2xl p-3",
                       "justify-start items-start",
                       "bg-muted/50 hover:bg-muted/70",
                       "border border-transparent hover:border-foreground/10",
