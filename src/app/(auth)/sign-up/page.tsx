@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { authClient } from "@/lib/auth-client";
+import { formatAuthError } from "@/lib/auth-errors";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,10 +24,15 @@ export default function SignUpPage() {
     e.preventDefault();
     setError(null);
 
+    if (!name.trim() || !email.trim() || !password) {
+      setError("Name, email, and password are required.");
+      return;
+    }
+
     await authClient.signUp.email(
       {
-        name,
-        email,
+        name: name.trim(),
+        email: email.trim(),
         password,
         callbackURL: "/",
       },
@@ -39,7 +45,9 @@ export default function SignUpPage() {
         },
         onError: (ctx) => {
           setLoading(false);
-          setError(ctx.error?.message ?? "Could not create account.");
+          setError(
+            formatAuthError(ctx.error?.message) ?? "Could not create account."
+          );
         },
       }
     );
@@ -64,6 +72,7 @@ export default function SignUpPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoComplete="name"
+              required
             />
           </div>
 
@@ -76,6 +85,7 @@ export default function SignUpPage() {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
               inputMode="email"
+              required
             />
           </div>
 
@@ -88,6 +98,7 @@ export default function SignUpPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
+              required
             />
           </div>
 

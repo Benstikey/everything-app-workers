@@ -41,6 +41,9 @@ import {
 
 import { AddSubscriptionForm } from "@/components/features/subscriptions/add-subscription-form";
 import { BrandAvatar } from "@/components/features/subscriptions/brand-avatar";
+import { authClient } from "@/lib/auth-client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 type Charge = { sub: Subscription; date: Date };
 
@@ -77,6 +80,7 @@ export default function CalendarMain() {
     "subs-calendar:subs",
     []
   );
+  const { data: session } = authClient.useSession();
   const [month, setMonth] = React.useState<Date>(startOfMonth(new Date()));
   const [selectedDay, setSelectedDay] = React.useState<Date>(new Date());
   const [addOpen, setAddOpen] = React.useState(false);
@@ -113,6 +117,9 @@ export default function CalendarMain() {
   );
 
   const weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const profileName = session?.user?.name ?? "Profile";
+  const profileEmail = session?.user?.email ?? "Signed in account";
+  const profileImage = session?.user?.image ?? "/avatar.svg";
 
   function removeSub(id: string) {
     setSubs(subs.filter((s) => s.id !== id));
@@ -165,6 +172,61 @@ export default function CalendarMain() {
 
   return (
     <div className="mx-auto max-w-6xl">
+      <Card className="mb-6 rounded-2xl border bg-card/60 backdrop-blur">
+        <CardContent className="flex flex-wrap items-center justify-between gap-4 p-4">
+          <div className="flex flex-wrap items-center gap-2">
+            <Button variant="secondary" className="rounded-full px-4">
+              Dashboard
+            </Button>
+            <Button
+              variant="ghost"
+              className="rounded-full px-4 text-muted-foreground"
+            >
+              Subscriptions
+            </Button>
+            <Button
+              variant="ghost"
+              className="rounded-full px-4 text-muted-foreground"
+            >
+              Calendar
+            </Button>
+          </div>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                className="flex items-center gap-3 rounded-full border bg-muted/40 px-3 py-1.5 transition hover:bg-muted/60"
+                type="button"
+              >
+                <Avatar className="h-9 w-9 border">
+                  <AvatarImage src={profileImage} alt={profileName} />
+                  <AvatarFallback>
+                    {profileName.slice(0, 1).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="text-left leading-tight">
+                  <div className="text-sm font-medium">{profileName}</div>
+                  <div className="text-xs text-muted-foreground">{profileEmail}</div>
+                </div>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent
+              side="bottom"
+              align="end"
+              className="w-56 rounded-xl"
+            >
+              <div className="space-y-1 text-xs">
+                <div className="text-sm font-semibold text-foreground">
+                  {profileName}
+                </div>
+                <div className="text-muted-foreground">{profileEmail}</div>
+                <div className="text-muted-foreground">Active plan: Personal</div>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </CardContent>
+      </Card>
+
       <div className="grid gap-6 lg:grid-cols-[340px_1fr] items-stretch">
         {/* LEFT SIDEBAR */}
         <Card className="rounded-2xl border bg-card/60 backdrop-blur h-full flex flex-col">
