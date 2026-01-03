@@ -171,10 +171,10 @@ export default function CalendarMain() {
   }, [dayModal]);
 
   return (
-    <div className="mx-auto flex min-h-screen max-w-6xl flex-col">
+    <div className="mx-auto flex min-h-screen max-w-6xl flex-col py-4">
       <div className="mb-6 grid gap-3 md:grid-cols-[1fr_auto]">
         <Card className="rounded-2xl border bg-card/60 backdrop-blur">
-          <CardContent className="flex flex-wrap items-center gap-2 p-3">
+          <CardContent className="flex flex-wrap items-center gap-3 px-3 py-0">
             <Button variant="secondary" className="rounded-full px-4">
               Dashboard
             </Button>
@@ -190,11 +190,27 @@ export default function CalendarMain() {
             >
               Calendar
             </Button>
+
+            <div className="flex flex-wrap items-center gap-2">
+              {["Insights", "Automations", "Teams"].map((label) => (
+                <div
+                  key={label}
+                  className="flex items-center gap-2 rounded-xl border bg-muted/30 px-3 py-1 text-xs text-muted-foreground"
+                >
+                  <span className="font-medium text-foreground/80">
+                    {label}
+                  </span>
+                  <span className="rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wide">
+                    Coming soon
+                  </span>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
 
         <Card className="rounded-2xl border bg-card/60 backdrop-blur">
-          <CardContent className="p-2">
+          <CardContent className="px-2 py-0">
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -218,7 +234,7 @@ export default function CalendarMain() {
               <TooltipContent
                 side="bottom"
                 align="end"
-                className="w-56 rounded-xl"
+                className="w-56 rounded-xl border bg-card/95 text-foreground shadow-lg"
               >
                 <div className="space-y-1 text-xs">
                   <div className="text-sm font-semibold text-foreground">
