@@ -5,6 +5,8 @@ import { createAuth } from "@/lib/auth";
 type EnvWithAuth = {
   DB: D1Database;
   BETTER_AUTH_SECRET: string;
+  BETTER_AUTH_URL?: string;
+  NEXT_PUBLIC_APP_URL?: string;
 };
 
 export async function GET(req: Request) {

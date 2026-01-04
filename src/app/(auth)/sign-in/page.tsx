@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { authClient } from "@/lib/auth-client";
+import { formatAuthError } from "@/lib/auth-errors";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -22,9 +23,14 @@ export default function SignInPage() {
     e.preventDefault();
     setError(null);
 
+    if (!email.trim() || !password) {
+      setError("Email and password are required.");
+      return;
+    }
+
     await authClient.signIn.email(
       {
-        email,
+        email: email.trim(),
         password,
         callbackURL: "/",
       },
@@ -37,7 +43,7 @@ export default function SignInPage() {
         },
         onError: (ctx) => {
           setLoading(false);
-          setError(ctx.error?.message ?? "Could not sign in.");
+          setError(formatAuthError(ctx.error?.message) ?? "Could not sign in.");
         },
       }
     );
@@ -63,6 +69,7 @@ export default function SignInPage() {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
               inputMode="email"
+              required
             />
           </div>
 
@@ -75,6 +82,7 @@ export default function SignInPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="current-password"
+              required
             />
           </div>
 

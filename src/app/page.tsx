@@ -10,6 +10,8 @@ export const dynamic = "force-dynamic";
 type EnvWithAuth = {
   DB: D1Database;
   BETTER_AUTH_SECRET: string;
+  BETTER_AUTH_URL?: string;
+  NEXT_PUBLIC_APP_URL?: string;
 };
 
 export default async function Page() {
