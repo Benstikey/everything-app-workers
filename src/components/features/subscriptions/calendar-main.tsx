@@ -172,85 +172,6 @@ export default function CalendarMain() {
 
   return (
     <div className="mx-auto flex min-h-screen max-w-6xl flex-col py-4">
-      <div className="mb-6 grid gap-3 md:grid-cols-[1fr_auto]">
-        <Card className="rounded-2xl border bg-card/60 backdrop-blur">
-          <CardContent className="flex flex-wrap items-center gap-3 px-3 py-0">
-            <Button variant="secondary" className="rounded-full px-4">
-              Dashboard
-            </Button>
-            <Button
-              variant="ghost"
-              className="rounded-full px-4 text-muted-foreground"
-            >
-              Subscriptions
-            </Button>
-            <Button
-              variant="ghost"
-              className="rounded-full px-4 text-muted-foreground"
-            >
-              Calendar
-            </Button>
-
-            <div className="flex flex-wrap items-center gap-2">
-              {["Insights", "Automations", "Teams"].map((label) => (
-                <div
-                  key={label}
-                  className="flex items-center gap-2 rounded-xl border bg-muted/30 px-3 py-1 text-xs text-muted-foreground"
-                >
-                  <span className="font-medium text-foreground/80">
-                    {label}
-                  </span>
-                  <span className="rounded-full border px-2 py-0.5 text-[10px] uppercase tracking-wide">
-                    Coming soon
-                  </span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-2xl border bg-card/60 backdrop-blur">
-          <CardContent className="px-2 py-0">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  className="flex items-center gap-3 rounded-full border bg-muted/40 px-3 py-1.5 transition hover:bg-muted/60"
-                  type="button"
-                >
-                  <Avatar className="h-9 w-9 border">
-                    <AvatarImage src={profileImage} alt={profileName} />
-                    <AvatarFallback>
-                      {profileName.slice(0, 1).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="text-left leading-tight">
-                    <div className="text-sm font-medium">{profileName}</div>
-                    <div className="text-xs text-muted-foreground">
-                      {profileEmail}
-                    </div>
-                  </div>
-                </button>
-              </TooltipTrigger>
-              <TooltipContent
-                side="bottom"
-                align="end"
-                className="w-56 rounded-xl border bg-card/95 text-foreground shadow-lg"
-              >
-                <div className="space-y-1 text-xs">
-                  <div className="text-sm font-semibold text-foreground">
-                    {profileName}
-                  </div>
-                  <div className="text-muted-foreground">{profileEmail}</div>
-                  <div className="text-muted-foreground">
-                    Active plan: Personal
-                  </div>
-                </div>
-              </TooltipContent>
-            </Tooltip>
-          </CardContent>
-        </Card>
-      </div>
-
       <div className="grid flex-1 gap-6 lg:grid-cols-[340px_1fr] items-stretch">
         {/* LEFT SIDEBAR */}
         <Card className="rounded-2xl border bg-card/60 backdrop-blur h-full flex flex-col">
@@ -355,32 +276,36 @@ export default function CalendarMain() {
         </Card>
 
         {/* RIGHT / MAIN CALENDAR BOX */}
-        <Card className="rounded-2xl border bg-card/60 backdrop-blur">
+        <Card className="rounded-3xl border bg-card/60 backdrop-blur">
           <CardHeader className="space-y-4">
             <div className="flex items-start justify-between gap-4">
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="rounded-full"
-                  onClick={() =>
-                    setMonth((m) => startOfMonth(addMonths(m, -1)))
-                  }
-                  aria-label="Previous month"
-                >
-                  <ChevronLeft className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="secondary"
-                  size="icon"
-                  className="rounded-full"
-                  onClick={() => setMonth((m) => startOfMonth(addMonths(m, 1)))}
-                  aria-label="Next month"
-                >
-                  <ChevronRight className="h-4 w-4" />
-                </Button>
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="rounded-full"
+                    onClick={() =>
+                      setMonth((m) => startOfMonth(addMonths(m, -1)))
+                    }
+                    aria-label="Previous month"
+                  >
+                    <ChevronLeft className="h-4 w-4" />
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="rounded-full"
+                    onClick={() =>
+                      setMonth((m) => startOfMonth(addMonths(m, 1)))
+                    }
+                    aria-label="Next month"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </Button>
+                </div>
 
-                <div className="ml-2 leading-none">
+                <div className="leading-none">
                   <div className="text-3xl font-semibold tracking-tight">
                     {format(month, "MMMM")}{" "}
                     <span className="text-muted-foreground">
@@ -390,13 +315,55 @@ export default function CalendarMain() {
                 </div>
               </div>
 
-              <div className="text-right">
-                <div className="text-xs text-muted-foreground">
-                  Monthly spend
+              <div className="flex items-center gap-4">
+                <div className="text-right">
+                  <div className="text-xs text-muted-foreground">
+                    Monthly spend
+                  </div>
+                  <div className="text-lg font-semibold tabular-nums">
+                    {currencyEUR(monthlyTotal)}
+                  </div>
                 </div>
-                <div className="text-lg font-semibold tabular-nums">
-                  {currencyEUR(monthlyTotal)}
-                </div>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className="flex items-center gap-3 rounded-full border bg-muted/40 px-3 py-1.5 transition hover:bg-muted/60"
+                      type="button"
+                    >
+                      <Avatar className="h-9 w-9 border">
+                        <AvatarImage src={profileImage} alt={profileName} />
+                        <AvatarFallback>
+                          {profileName.slice(0, 1).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="text-left leading-tight">
+                        <div className="text-sm font-medium">
+                          {profileName}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {profileEmail}
+                        </div>
+                      </div>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="bottom"
+                    align="end"
+                    className="w-56 rounded-xl border bg-card/95 text-foreground shadow-lg"
+                  >
+                    <div className="space-y-1 text-xs">
+                      <div className="text-sm font-semibold text-foreground">
+                        {profileName}
+                      </div>
+                      <div className="text-muted-foreground">
+                        {profileEmail}
+                      </div>
+                      <div className="text-muted-foreground">
+                        Active plan: Personal
+                      </div>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
               </div>
             </div>
 
@@ -406,7 +373,7 @@ export default function CalendarMain() {
                 <Button
                   key={d}
                   variant="secondary"
-                  className="h-9 rounded-full text-xs tracking-wide opacity-90"
+                  className="h-9 rounded-full text-xs tracking-wide opacity-70"
                   disabled
                 >
                   {d}
@@ -436,7 +403,7 @@ export default function CalendarMain() {
                     className={cn(
                       "relative aspect-square w-full rounded-2xl p-3",
                       "justify-start items-start",
-                      "bg-muted/50 hover:bg-muted/70",
+                      "bg-muted/20 hover:bg-muted/40",
                       "border border-transparent hover:border-foreground/10",
                       "transition-colors",
                       !inMonth && "opacity-40",
