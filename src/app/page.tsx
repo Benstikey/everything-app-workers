@@ -9,7 +9,7 @@ export const dynamic = "force-dynamic";
 
 type EnvWithAuth = {
   DB: D1Database;
-  BETTER_AUTH_SECRET: string;
+  BETTER_AUTH_SECRET?: string;
 };
 
 export default async function Page() {
@@ -22,5 +22,5 @@ export default async function Page() {
 
   if (!session) redirect("/sign-in");
 
-  return <CalendarMain />;
+  return <CalendarMain user={session.user} />;
 }

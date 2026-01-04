@@ -4,8 +4,10 @@ import { createAuth } from "@/lib/auth";
 
 type EnvWithAuth = {
   DB: D1Database;
-  BETTER_AUTH_SECRET: string;
+  BETTER_AUTH_SECRET?: string;
 };
+
+export const runtime = "edge";
 
 export async function GET(req: Request) {
   const { env } = await getCloudflareContext({ async: true });
