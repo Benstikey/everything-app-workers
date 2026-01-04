@@ -174,109 +174,156 @@ export default function CalendarMain() {
     <div className="mx-auto flex min-h-screen max-w-6xl flex-col py-4">
       <div className="grid flex-1 gap-6 lg:grid-cols-[340px_1fr] items-stretch">
         {/* LEFT SIDEBAR */}
-        <Card className="rounded-2xl border bg-card/60 backdrop-blur h-full flex flex-col">
-          <CardHeader className="space-y-2">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <CardTitle className="text-base">Subscriptions</CardTitle>
-                <div className="text-sm text-muted-foreground">
-                  Add your monthly spend & see charge days
+        <div className="rounded-2xl bg-gradient-to-br from-foreground/10 via-transparent to-foreground/5 p-[1px]">
+          <Card className="rounded-2xl border bg-card/60 backdrop-blur h-full flex flex-col">
+            <CardHeader className="space-y-4">
+              <div className="rounded-2xl border bg-muted/30 p-3">
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      className="flex items-center gap-3 rounded-full border bg-muted/40 px-3 py-1.5 transition hover:bg-muted/60"
+                      type="button"
+                    >
+                      <Avatar className="h-9 w-9 border">
+                        <AvatarImage src={profileImage} alt={profileName} />
+                        <AvatarFallback>
+                          {profileName.slice(0, 1).toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="text-left leading-tight">
+                        <div className="text-sm font-medium">
+                          {profileName}
+                        </div>
+                        <div className="text-xs text-muted-foreground">
+                          {profileEmail}
+                        </div>
+                      </div>
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="bottom"
+                    align="start"
+                    className="w-56 rounded-xl border bg-card/95 text-foreground shadow-lg"
+                  >
+                    <div className="space-y-1 text-xs">
+                      <div className="text-sm font-semibold text-foreground">
+                        {profileName}
+                      </div>
+                      <div className="text-muted-foreground">
+                        {profileEmail}
+                      </div>
+                      <div className="text-muted-foreground">
+                        Active plan: Personal
+                      </div>
+                    </div>
+                  </TooltipContent>
+                </Tooltip>
+              </div>
+
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <CardTitle className="text-base">Subscriptions</CardTitle>
+                  <div className="text-sm text-muted-foreground">
+                    Add your monthly spend & see charge days
+                  </div>
+                </div>
+
+                <Dialog open={addOpen} onOpenChange={setAddOpen}>
+                  <DialogTrigger asChild>
+                    <Button variant="secondary" className="rounded-xl">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="rounded-2xl">
+                    <DialogHeader>
+                      <DialogTitle>Add subscription</DialogTitle>
+                    </DialogHeader>
+                    <AddSubscriptionForm
+                      onAdd={(sub) => {
+                        setSubs([sub, ...subs]);
+                        setAddOpen(false);
+                      }}
+                    />
+                  </DialogContent>
+                </Dialog>
+              </div>
+
+              <div className="rounded-xl border p-3">
+                <div className="text-xs text-muted-foreground">
+                  Monthly spend
+                </div>
+                <div className="mt-1 text-2xl font-semibold tabular-nums">
+                  {currencyEUR(monthlyTotal)}
                 </div>
               </div>
+            </CardHeader>
 
-              <Dialog open={addOpen} onOpenChange={setAddOpen}>
-                <DialogTrigger asChild>
-                  <Button variant="secondary" className="rounded-xl">
-                    <Plus className="mr-2 h-4 w-4" />
-                    Add
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="rounded-2xl">
-                  <DialogHeader>
-                    <DialogTitle>Add subscription</DialogTitle>
-                  </DialogHeader>
-                  <AddSubscriptionForm
-                    onAdd={(sub) => {
-                      setSubs([sub, ...subs]);
-                      setAddOpen(false);
-                    }}
-                  />
-                </DialogContent>
-              </Dialog>
-            </div>
+            <CardContent className="space-y-4 flex-1 flex flex-col">
+              <Separator />
 
-            <div className="rounded-xl border p-3">
-              <div className="text-xs text-muted-foreground">Monthly spend</div>
-              <div className="mt-1 text-2xl font-semibold tabular-nums">
-                {currencyEUR(monthlyTotal)}
-              </div>
-            </div>
-          </CardHeader>
-
-          <CardContent className="space-y-4 flex-1 flex flex-col">
-            <Separator />
-
-            {subs.length === 0 ? (
-              <div className="rounded-xl border p-4 text-sm text-muted-foreground">
-                No subscriptions yet.
-              </div>
-            ) : (
-              <ScrollArea className="flex-1">
-                <div className="rounded-xl border overflow-x-auto">
-                  <Table>
-                    <THead>
-                      <TableRow>
-                        <TableHead className="w-10"> </TableHead>
-                        <TableHead className="whitespace-nowrap">
-                          Name
-                        </TableHead>
-                        <TableHead className="text-right whitespace-nowrap">
-                          Amount
-                        </TableHead>
-                        <TableHead className="text-right whitespace-nowrap">
-                          Day
-                        </TableHead>
-                        <TableHead className="w-10 text-right"> </TableHead>
-                      </TableRow>
-                    </THead>
-                    <TableBody>
-                      {subs.map((s) => (
-                        <TableRow key={s.id}>
-                          <TableCell className="w-10">
-                            <BrandAvatar name={s.name} slug={s.iconSlug} />
-                          </TableCell>
-                          <TableCell className="font-medium">
-                            {s.name}
-                          </TableCell>
-                          <TableCell className="text-right tabular-nums">
-                            {currencyEUR(s.amount)}
-                          </TableCell>
-                          <TableCell className="text-right tabular-nums">
-                            {s.billingDay}
-                          </TableCell>
-                          <TableCell className="w-10 text-right">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              className="h-8 w-8 rounded-xl"
-                              onClick={() => removeSub(s.id)}
-                              aria-label={`Delete ${s.name}`}
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </TableCell>
+              {subs.length === 0 ? (
+                <div className="rounded-xl border p-4 text-sm text-muted-foreground">
+                  No subscriptions yet.
+                </div>
+              ) : (
+                <ScrollArea className="flex-1">
+                  <div className="rounded-xl border overflow-x-auto">
+                    <Table>
+                      <THead>
+                        <TableRow>
+                          <TableHead className="w-10"> </TableHead>
+                          <TableHead className="whitespace-nowrap">
+                            Name
+                          </TableHead>
+                          <TableHead className="text-right whitespace-nowrap">
+                            Amount
+                          </TableHead>
+                          <TableHead className="text-right whitespace-nowrap">
+                            Day
+                          </TableHead>
+                          <TableHead className="w-10 text-right"> </TableHead>
                         </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </ScrollArea>
-            )}
-          </CardContent>
-        </Card>
+                      </THead>
+                      <TableBody>
+                        {subs.map((s) => (
+                          <TableRow key={s.id}>
+                            <TableCell className="w-10">
+                              <BrandAvatar name={s.name} slug={s.iconSlug} />
+                            </TableCell>
+                            <TableCell className="font-medium">
+                              {s.name}
+                            </TableCell>
+                            <TableCell className="text-right tabular-nums">
+                              {currencyEUR(s.amount)}
+                            </TableCell>
+                            <TableCell className="text-right tabular-nums">
+                              {s.billingDay}
+                            </TableCell>
+                            <TableCell className="w-10 text-right">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 rounded-xl"
+                                onClick={() => removeSub(s.id)}
+                                aria-label={`Delete ${s.name}`}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                </ScrollArea>
+              )}
+            </CardContent>
+          </Card>
+        </div>
 
         {/* RIGHT / MAIN CALENDAR BOX */}
-        <Card className="rounded-3xl border bg-card/60 backdrop-blur">
+        <Card className="rounded-2xl border bg-card/60 backdrop-blur">
           <CardHeader className="space-y-4">
             <div className="flex items-start justify-between gap-4">
               <div className="flex items-center gap-3">
@@ -315,55 +362,13 @@ export default function CalendarMain() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4">
-                <div className="text-right">
-                  <div className="text-xs text-muted-foreground">
-                    Monthly spend
-                  </div>
-                  <div className="text-lg font-semibold tabular-nums">
-                    {currencyEUR(monthlyTotal)}
-                  </div>
+              <div className="text-right">
+                <div className="text-xs text-muted-foreground">
+                  Monthly spend
                 </div>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <button
-                      className="flex items-center gap-3 rounded-full border bg-muted/40 px-3 py-1.5 transition hover:bg-muted/60"
-                      type="button"
-                    >
-                      <Avatar className="h-9 w-9 border">
-                        <AvatarImage src={profileImage} alt={profileName} />
-                        <AvatarFallback>
-                          {profileName.slice(0, 1).toUpperCase()}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="text-left leading-tight">
-                        <div className="text-sm font-medium">
-                          {profileName}
-                        </div>
-                        <div className="text-xs text-muted-foreground">
-                          {profileEmail}
-                        </div>
-                      </div>
-                    </button>
-                  </TooltipTrigger>
-                  <TooltipContent
-                    side="bottom"
-                    align="end"
-                    className="w-56 rounded-xl border bg-card/95 text-foreground shadow-lg"
-                  >
-                    <div className="space-y-1 text-xs">
-                      <div className="text-sm font-semibold text-foreground">
-                        {profileName}
-                      </div>
-                      <div className="text-muted-foreground">
-                        {profileEmail}
-                      </div>
-                      <div className="text-muted-foreground">
-                        Active plan: Personal
-                      </div>
-                    </div>
-                  </TooltipContent>
-                </Tooltip>
+                <div className="text-lg font-semibold tabular-nums">
+                  {currencyEUR(monthlyTotal)}
+                </div>
               </div>
             </div>
 
@@ -373,7 +378,7 @@ export default function CalendarMain() {
                 <Button
                   key={d}
                   variant="secondary"
-                  className="h-9 rounded-full text-xs tracking-wide opacity-70"
+                  className="h-9 rounded-full text-xs tracking-wide opacity-90"
                   disabled
                 >
                   {d}
@@ -403,7 +408,7 @@ export default function CalendarMain() {
                     className={cn(
                       "relative aspect-square w-full rounded-2xl p-3",
                       "justify-start items-start",
-                      "bg-muted/20 hover:bg-muted/40",
+                      "bg-muted/50 hover:bg-muted/70",
                       "border border-transparent hover:border-foreground/10",
                       "transition-colors",
                       !inMonth && "opacity-40",
