@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
+import Link from "next/link";
 import {
   addDays,
   addMonths,
@@ -38,6 +40,7 @@ import {
   TableHeader as THead,
   TableRow,
 } from "@/components/ui/table";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 import { AddSubscriptionForm } from "@/components/features/subscriptions/add-subscription-form";
 import { BrandAvatar } from "@/components/features/subscriptions/brand-avatar";
@@ -49,6 +52,16 @@ type DayModalState = {
   day: Date;
   from: Rect;
   to: Rect;
+};
+
+type CalendarUser = {
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+};
+
+type CalendarMainProps = {
+  user?: CalendarUser | null;
 };
 
 function currencyEUR(n: number) {
@@ -72,7 +85,7 @@ function getMonthGrid(month: Date) {
   return days.slice(0, 42);
 }
 
-export default function CalendarMain() {
+export default function CalendarMain({ user }: CalendarMainProps) {
   const [subs, setSubs] = useLocalStorage<Subscription[]>(
     "subs-calendar:subs",
     []
@@ -113,6 +126,9 @@ export default function CalendarMain() {
   );
 
   const weekdays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+  const displayName = user?.name || "Your Profile";
+  const displayEmail = user?.email || "Signed in account";
+  const avatarSrc = user?.image || "/avatar.svg";
 
   function removeSub(id: string) {
     setSubs(subs.filter((s) => s.id !== id));
@@ -164,7 +180,68 @@ export default function CalendarMain() {
   }, [dayModal]);
 
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="mx-auto max-w-6xl space-y-6">
+      <Card className="rounded-2xl border bg-card/60 backdrop-blur">
+        <CardContent className="flex flex-col gap-4 p-4 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-1 flex-col gap-3">
+            <div>
+              <div className="text-sm text-muted-foreground">Everything</div>
+              <div className="text-lg font-semibold">
+                Your Second Brain Dashboard
+              </div>
+            </div>
+            <nav className="flex flex-wrap gap-2">
+              {[
+                { label: "Overview", href: "/" },
+                { label: "Subscriptions", href: "/" },
+                { label: "Calendar", href: "/" },
+              ].map((item) => (
+                <Button
+                  key={item.label}
+                  variant="secondary"
+                  size="sm"
+                  className="rounded-full"
+                  asChild
+                >
+                  <Link href={item.href}>{item.label}</Link>
+                </Button>
+              ))}
+            </nav>
+          </div>
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button className="flex items-center gap-3 rounded-full border bg-muted/40 px-3 py-2 transition hover:bg-muted/60">
+                <span className="relative h-10 w-10 overflow-hidden rounded-full border">
+                  <Image
+                    src={avatarSrc}
+                    alt={`${displayName} avatar`}
+                    fill
+                    sizes="40px"
+                    className="object-cover"
+                  />
+                </span>
+                <div className="text-left">
+                  <div className="text-sm font-medium">{displayName}</div>
+                  <div className="text-xs text-muted-foreground">
+                    View profile
+                  </div>
+                </div>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" sideOffset={10} className="max-w-[220px]">
+              <div className="space-y-1">
+                <div className="text-sm font-semibold">{displayName}</div>
+                <div className="text-xs text-background/80">{displayEmail}</div>
+                <div className="text-[11px] text-background/70">
+                  Signed in • Hover to see details
+                </div>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+        </CardContent>
+      </Card>
+
       <div className="grid gap-6 lg:grid-cols-[340px_1fr] items-stretch">
         {/* LEFT SIDEBAR */}
         <Card className="rounded-2xl border bg-card/60 backdrop-blur h-full flex flex-col">

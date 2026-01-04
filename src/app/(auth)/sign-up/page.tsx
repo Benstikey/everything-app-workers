@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { authClient } from "@/lib/auth-client";
+import { formatAuthError } from "@/lib/auth-errors";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -23,6 +24,11 @@ export default function SignUpPage() {
     e.preventDefault();
     setError(null);
 
+    if (!name.trim() || !email.trim() || !password.trim()) {
+      setError("Please enter your name, email, and password.");
+      return;
+    }
+
     await authClient.signUp.email(
       {
         name,
@@ -39,7 +45,7 @@ export default function SignUpPage() {
         },
         onError: (ctx) => {
           setLoading(false);
-          setError(ctx.error?.message ?? "Could not create account.");
+          setError(formatAuthError(ctx.error, "Could not create account."));
         },
       }
     );
@@ -64,6 +70,7 @@ export default function SignUpPage() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoComplete="name"
+              required
             />
           </div>
 
@@ -76,6 +83,7 @@ export default function SignUpPage() {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
               inputMode="email"
+              required
             />
           </div>
 
@@ -88,11 +96,15 @@ export default function SignUpPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
+              required
             />
           </div>
 
           {error && (
-            <div className="rounded-xl border bg-muted/40 p-3 text-sm text-foreground/90">
+            <div
+              className="rounded-xl border bg-muted/40 p-3 text-sm text-foreground/90"
+              role="alert"
+            >
               {error}
             </div>
           )}
